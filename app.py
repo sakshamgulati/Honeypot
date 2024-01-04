@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from utils import feature_engineering
 import plotly.express as px
-import streamlit.components.v1 as components
 
 
 # Load the data from honeypot.json
