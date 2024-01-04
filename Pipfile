@@ -7,6 +7,8 @@ name = "pypi"
 streamlit = "*"
 ipaddress = "*"
 pandas = "*"
+plotly = "*"
+altair = "*"
 
 [dev-packages]
 
