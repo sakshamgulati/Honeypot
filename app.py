@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from utils import feature_engineering
 import plotly.express as px
+import streamlit.components.v1 as components
 
 
 # Load the data from honeypot.json
@@ -22,9 +23,15 @@ def main():
     # create a subtitle
     st.subheader("Curated By: Saksham Gulati")
     # add a description to the title
+    st.text("This app uses Streamlit to provide a quick summary of honey pot analysis")
+    st.text("You can use filters below to narrow down your data")
     st.text(
-        "This is a simple app to display high-level information about the honey pot project. For more details please visit:https://colab.research.google.com/drive/123jgxOuIuBkQliNkBXmsA_vSJiRfJbHm?usp=sharing"
+        " Some default filters are pre-selected based on insights from the Colab notebook."
     )
+    st.text(
+        "For more information, visit:https://colab.research.google.com/drive/123jgxOuIuBkQliNkBXmsA_vSJiRfJbHm?usp=sharing"
+    )
+    st.markdown("""---""")
 
     # Leave the third column empty
 
@@ -40,7 +47,7 @@ def main():
     attack_from_location_filter = col2.multiselect(
         "Select Country where attack originated from:",
         options=list(feature_rich_df["country_name_1"].unique()),
-        default=list(["China", "Netherlands"]),
+        default=list(["China", "Netherlands", "United Kingdom", "United States"]),
     )
     col2.markdown("""---""")
     hour_filter = col1.multiselect(
@@ -75,12 +82,15 @@ def main():
         & feature_rich_df["port_bucket"].isin(port_filter)
         & feature_rich_df["proxy_type"].isin(proxy_filter)
     ]
+    st.subheader("Time Series Analysis")
     minute_data = filtered_data.groupby("minute").size().to_frame("freq").reset_index()
     attacks_per_min = px.line(
         minute_data, x="minute", y="freq", title="Attacks per minute"
     )
     st.plotly_chart(attacks_per_min)
+    st.subheader("Frequency Distributions and Location Maps")
     col3, col4 = st.columns(2)
+
     col3.write(
         filtered_data["tags"]
         .value_counts()
@@ -92,9 +102,9 @@ def main():
     # Use st.plotly_chart() to display the plot
 
     chart_type = col4.radio(
-        "Select visualization", ("Attack Originating from:", "Attacked")
+        "Select map visualization", ("Origin of Attack", "Target Country")
     )
-    if chart_type == "Attack Originating from:":
+    if chart_type == "Origin of Attack":
         attack_from = (
             filtered_data.groupby("country_name_1")
             .size()
@@ -128,8 +138,10 @@ def main():
             scope="world",
         )
         st.plotly_chart(attacks_per_country)
+    st.subheader("List of IPs with multiple port scans")
+    st.text("Checking multiple ports shows suspicious attempts to find vulnerabilities")
     st.text(
-        "This is a simple app to display high-level information about the honey pot project. For more details please visit:https://colab.research.google.com/drive/123jgxOuIuBkQliNkBXmsA_vSJiRfJbHm?usp=sharing"
+        "After identifying all such IP addresses, we can block their corresponding subnets and AS numbers from our main system and adjust our firewall accordingly"
     )
     table = (
         filtered_data.groupby(["ip", "proxy_type", "port"])
