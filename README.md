@@ -30,3 +30,6 @@ Using the data on the file create an analysis of your choice. This exercise is m
 
 ### Notebook
 https://colab.research.google.com/drive/123jgxOuIuBkQliNkBXmsA_vSJiRfJbHm#scrollTo=EPjW9Z0QLI-U
+
+### App
+https://honeypot-ywgmwrnl53iykhyuamwm3c.streamlit.app/
